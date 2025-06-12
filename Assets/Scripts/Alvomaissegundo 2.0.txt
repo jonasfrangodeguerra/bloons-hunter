@@ -1,0 +1,31 @@
+using UnityEngine;
+
+public class alvomaissegundos : MonoBehaviour
+{
+    public float tempoParaAdicionar = 5f;
+    private contagemR1 cronometro;
+
+    void Start()
+    {
+        // Procura o GameObject com a tag "contagem"
+        GameObject cronometroObj = GameObject.FindGameObjectWithTag("contagem");
+
+        if (cronometroObj != null)
+        {
+            cronometro = cronometroObj.GetComponent<contagemR1>();
+        }
+        else
+        {
+            Debug.LogWarning("Nenhum objeto com a tag 'contagem' foi encontrado na cena.");
+        }
+    }
+
+    void OnMouseDown()
+    {
+        if (cronometro != null)
+        {
+            cronometro.AdicionarTempo(tempoParaAdicionar);
+            Destroy(gameObject); // remove o alvo após clicar
+        }
+    }
+}
