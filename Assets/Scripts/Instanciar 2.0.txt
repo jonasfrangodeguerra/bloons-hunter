@@ -1,0 +1,96 @@
+using System.Collections;
+using UnityEngine;
+
+public class InstanciarObjetos : MonoBehaviour
+{
+    // Variável para controlar quando criar um novo objeto
+    public bool EstaInstanciando = false;
+
+    // Variável do tempo de delay entre criação de objetos
+    public float TempoEntreInstancias = 1;
+
+    // Variável da chance, em porcentagem, de criar um alvo ruim
+    public float PorcentagemDeAlvoRuim = 30;
+
+    // Referencia do PreFab do alvo padrão
+    public GameObject PreFab_Alvo;
+
+    public GameObject BalaoTempo;
+
+    // Referencia do PreFab do alvo ruim
+    public GameObject PreFab_AlvoRuim;
+
+    public GameObject balao;
+
+    public GameObject BalaoCaveira;
+
+    public contagemR1 cronometro;
+    // Referencia do GameObject que será o pai e posição de origem dos alvos
+    public Transform Objeto_Pai;
+
+    public Transform Objeto_Pai1;
+
+    public Transform Objeto_Pai2;
+
+    void Update()
+    {
+        // Checa se a booleana EstaInstanciando está verdadeira
+        if (EstaInstanciando == true)
+        {
+            // Muda a booleana EstaInstanciando para false
+            EstaInstanciando = false;
+
+            // Invoca a função InstanciarPreFab() com o delay TempoEntreInstancias
+            Invoke("InstanciarPreFab", TempoEntreInstancias);
+        }
+    }
+
+    // Função para criar novo objeto
+    void InstanciarPreFab()
+    {
+        // Declaração de variável que é sorteada um valor de 0 a 100
+        float porcentagemSorteada = Random.Range(0,100);
+
+        // Checagem para ver se a porcentagem sorteada é menor ou igual a variavel porcentagem de alvo ruim
+        if (porcentagemSorteada <= PorcentagemDeAlvoRuim)
+        {
+            // Cria uma cópia do objeto PreFab_AlvoRuim como filho do objeto Objeto_Pai
+            Instantiate(BalaoTempo, Objeto_Pai);
+        }
+
+        // Se a porcentagem sorteada for maior do que a variavel de porcentagem de alvo ruim...
+        else
+        {
+            // Cria uma cópia do objeto PreFab_AlvoRuim como filho do objeto Objeto_Pai
+            Instantiate(balao, Objeto_Pai);
+        }
+       
+        if (porcentagemSorteada <= PorcentagemDeAlvoRuim)
+        {
+            // Cria uma cópia do objeto PreFab_AlvoRuim como filho do objeto Objeto_Pai
+            Instantiate(BalaoCaveira, Objeto_Pai1);
+        }
+         // Se a porcentagem sorteada for maior do que a variavel de porcentagem de alvo ruim...
+        else 
+        {
+
+            Instantiate (balao, Objeto_Pai1);
+
+        }
+        // Retorna a variável EstaInstanciando para true para reiniciarmos o ciclo de criar objetos
+        EstaInstanciando = true;
+
+         if (porcentagemSorteada <= PorcentagemDeAlvoRuim)
+        {
+            // Cria uma cópia do objeto PreFab_AlvoRuim como filho do objeto Objeto_Pai
+            Instantiate(BalaoCaveira, Objeto_Pai2);
+        }
+
+        // Se a porcentagem sorteada for maior do que a variavel de porcentagem de alvo ruim...
+        else
+        {
+            // Cria uma cópia do objeto PreFab_AlvoRuim como filho do objeto Objeto_Pai
+            Instantiate(balao, Objeto_Pai2);
+        }
+    }
+}
