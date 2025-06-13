@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement; // Importante!
+using UnityEngine.SceneManagement;
 
 public class InstanciarObjetos : MonoBehaviour
 {
@@ -19,12 +19,11 @@ public class InstanciarObjetos : MonoBehaviour
     public Transform Objeto_Pai1;
     public Transform Objeto_Pai2;
 
-    // Nome da cena para onde você quer ir
-    public string nomeCenaProxima = "ProximaCena";
+    // Número (índice) da próxima cena no Build Settings
+    public int indiceProximaCena = 1;
 
     void Update()
     {
-        // Verifica se o tempo acabou
         if (cronometro.tempoAtual <= 0)
         {
             MudarCena();
@@ -68,6 +67,14 @@ public class InstanciarObjetos : MonoBehaviour
 
     void MudarCena()
     {
-        SceneManager.LoadScene(nomeCenaProxima);
+        // Verifica se o índice é válido antes de trocar
+        if (indiceProximaCena < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(indiceProximaCena);
+        }
+        else
+        {
+            Debug.LogError("Índice da cena inválido! Verifique o Build Settings.");
+        }
     }
 }
