@@ -1,0 +1,73 @@
+using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement; // Importante!
+
+public class InstanciarObjetos : MonoBehaviour
+{
+    public bool EstaInstanciando = false;
+    public float TempoEntreInstancias = 1;
+    public float PorcentagemDeAlvoRuim = 30;
+    public float PorcentagemDeBalaoEspecial = 10;
+
+    public GameObject balao;
+    public GameObject BalaoCaveira;
+    public GameObject balaodoTempo;
+
+    public contagemR1 cronometro;
+
+    public Transform Objeto_Pai;
+    public Transform Objeto_Pai1;
+    public Transform Objeto_Pai2;
+
+    // Nome da cena para onde você quer ir
+    public string nomeCenaProxima = "ProximaCena";
+
+    void Update()
+    {
+        // Verifica se o tempo acabou
+        if (cronometro.tempoAtual <= 0)
+        {
+            MudarCena();
+        }
+
+        if (EstaInstanciando)
+        {
+            EstaInstanciando = false;
+            Invoke("InstanciarPreFab", TempoEntreInstancias);
+        }
+    }
+
+    void InstanciarPreFab()
+    {
+        Transform[] pontosDeSpawn = { Objeto_Pai, Objeto_Pai1, Objeto_Pai2 };
+
+        foreach (Transform ponto in pontosDeSpawn)
+        {
+            float sorteio = Random.Range(0f, 100f);
+
+            GameObject prefabEscolhido;
+
+            if (sorteio <= PorcentagemDeBalaoEspecial)
+            {
+                prefabEscolhido = balaodoTempo;
+            }
+            else if (sorteio <= PorcentagemDeBalaoEspecial + PorcentagemDeAlvoRuim)
+            {
+                prefabEscolhido = BalaoCaveira;
+            }
+            else
+            {
+                prefabEscolhido = balao;
+            }
+
+            Instantiate(prefabEscolhido, ponto);
+        }
+
+        EstaInstanciando = true;
+    }
+
+    void MudarCena()
+    {
+        SceneManager.LoadScene(nomeCenaProxima);
+    }
+}
