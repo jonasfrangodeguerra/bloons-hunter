@@ -1,80 +1,79 @@
-using System.Collections;
 using UnityEngine;
+using TMPro;
 using UnityEngine.SceneManagement;
 
-public class InstanciarObjetos : MonoBehaviour
+public class contagemR1 : MonoBehaviour
 {
-    public bool EstaInstanciando = false;
-    public float TempoEntreInstancias = 1;
-    public float PorcentagemDeAlvoRuim = 30;
-    public float PorcentagemDeBalaoEspecial = 10;
+    private bool isTimerActive = true;
+    public KeyCode restartKey = KeyCode.R;
+    public GameObject objectToDeactivate;
+    public int contagem = 60;
+    public TextMeshProUGUI textocontagem;
+    private float currenTime;
+    public int indiceProximaCena = 2;
+    public GameObject[] objetosParaDesativar;
 
-    public GameObject balao;
-    public GameObject BalaoCaveira;
-    public GameObject balaodoTempo;
-
-    public contagemR1 cronometro;
-
-    public Transform Objeto_Pai;
-    public Transform Objeto_Pai1;
-    public Transform Objeto_Pai2;
-
-    // Número (índice) da próxima cena no Build Settings
-    public int indiceProximaCena = 1;
+    void Start()
+    {
+        currenTime = contagem;
+    }
 
     void Update()
     {
-        if (cronometro.tempoAtual <= 0)
+        if (Input.GetKeyDown(restartKey))
         {
-            MudarCena();
+            RestartProcess();
         }
 
-        if (EstaInstanciando)
+        if (isTimerActive)
         {
-            EstaInstanciando = false;
-            Invoke("InstanciarPreFab", TempoEntreInstancias);
-        }
-    }
-
-    void InstanciarPreFab()
-    {
-        Transform[] pontosDeSpawn = { Objeto_Pai, Objeto_Pai1, Objeto_Pai2 };
-
-        foreach (Transform ponto in pontosDeSpawn)
-        {
-            float sorteio = Random.Range(0f, 100f);
-
-            GameObject prefabEscolhido;
-
-            if (sorteio <= PorcentagemDeBalaoEspecial)
+            if (currenTime > 0)
             {
-                prefabEscolhido = balaodoTempo;
-            }
-            else if (sorteio <= PorcentagemDeBalaoEspecial + PorcentagemDeAlvoRuim)
-            {
-                prefabEscolhido = BalaoCaveira;
+                currenTime -= Time.deltaTime;
+                textocontagem.text = Mathf.CeilToInt(currenTime).ToString();
             }
             else
             {
-                prefabEscolhido = balao;
+                textocontagem.text = "0";
+                foreach (GameObject obj in objetosParaDesativar)
+                {
+                    obj.SetActive(false);
+                }
+
+                isTimerActive = false;
+
+                // Aguarda um curto tempo antes de trocar de cena (opcional)
+                Invoke(nameof(MudarCena), 1f); // Espera 1 segundo antes de mudar
             }
-
-            Instantiate(prefabEscolhido, ponto);
         }
+    }
 
-        EstaInstanciando = true;
+    public void AdicionarTempo(float tempo)
+    {
+        currenTime += tempo;
+        currenTime = Mathf.Max(currenTime, 0);
+        textocontagem.text = Mathf.CeilToInt(currenTime).ToString();
+    }
+
+    void RestartProcess()
+    {
+        currenTime = contagem;
+        objectToDeactivate.SetActive(true);
+        isTimerActive = true;
+        textocontagem.text = Mathf.CeilToInt(currenTime).ToString();
     }
 
     void MudarCena()
     {
-        // Verifica se o índice é válido antes de trocar
-        if (indiceProximaCena < SceneManager.sceneCountInBuildSettings)
+        int totalCenas = SceneManager.sceneCountInBuildSettings;
+
+        if (indiceProximaCena < totalCenas)
         {
             SceneManager.LoadScene(indiceProximaCena);
         }
         else
         {
-            Debug.LogError("Índice da cena inválido! Verifique o Build Settings.");
+            Debug.LogError("Índice da próxima cena é inválido! Verifique o Build Settings.");
         }
     }
 }
