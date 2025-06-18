@@ -1,0 +1,19 @@
+using UnityEngine;
+using TMPro;
+
+public class ConectarTextoNaScene2 : MonoBehaviour
+{
+    public TMP_Text novoTexto;
+
+    void Start()
+    {
+        if (ContadorDePonto.Instance != null)
+        {
+            // Atribui o novo TextMeshPro da cena 2
+            ContadorDePonto.Instance.Texto_Output = novoTexto;
+
+            // Atualiza o texto com a pontuação atual
+            ContadorDePonto.Instance.AtualizarTexto();
+        }
+    }
+}
